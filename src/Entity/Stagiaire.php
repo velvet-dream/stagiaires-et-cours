@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StagiaireRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StagiaireRepository::class)]
@@ -21,6 +23,14 @@ class Stagiaire
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $date_naissance = null;
+
+    #[ORM\ManyToMany(targetEntity: Cours::class, mappedBy: 'stagiaire')]
+    private Collection $cours;
+
+    public function __construct()
+    {
+        $this->cours = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +69,33 @@ class Stagiaire
     public function setDateNaissance(?\DateTimeImmutable $date_naissance): static
     {
         $this->date_naissance = $date_naissance;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cours>
+     */
+    public function getCours(): Collection
+    {
+        return $this->cours;
+    }
+
+    public function addCour(Cours $cour): static
+    {
+        if (!$this->cours->contains($cour)) {
+            $this->cours->add($cour);
+            $cour->addStagiaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCour(Cours $cour): static
+    {
+        if ($this->cours->removeElement($cour)) {
+            $cour->removeStagiaire($this);
+        }
 
         return $this;
     }

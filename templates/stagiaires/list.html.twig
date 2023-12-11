@@ -33,6 +33,7 @@
             {% endif %}
             </th>
             <th>Voir</th>
+            <th>Modifier</th>
         </tr>
     {% for item in stagiaires %}
         <tr>
@@ -45,7 +46,8 @@
                     {{ item.datenaissance|format_datetime() }}
                 {% endif %}
             </td>
-            <th><a href=" {{ path('app_show_stagiaire' , {'id' : item.id })}}">Voir</a></th>
+            <td><a href=" {{ path('app_show_stagiaire' , {'id' : item.id })}}">Voir</a></td>
+            <td><a href=" {{ path('app_update_stagiaire' , {'id' : item.id })}}">Modifier</a></td>
         </tr>
     {% else %}
         Aucun stagiaire n'est inscrit ! 

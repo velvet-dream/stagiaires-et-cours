@@ -10,10 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
- 
+
+#[Route ('stagiaire/')]
 class StagiairesController extends AbstractController
 {
-    #[Route ('/stagiaires' , name : 'app_stagiaires')]
+    #[Route ('list' , name : 'app_stagiaires')]
     public function list(StagiaireRepository $stagiairesRepo, Request $request) : Response
     {
         $trinom = $request->query->get('trinom', 'asc');
@@ -33,29 +34,26 @@ class StagiairesController extends AbstractController
     }
 
     // TEST
-    #[Route ('/stagiaires/new' , name : 'app_newstagiaire')]
-    public function new(): Response
+    #[Route ('new' , name : 'app_newstagiaire')]
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(StagiaireFormType::class);
+        $stagiaire = new Stagiaire();
+        $form = $this->createForm(StagiaireFormType::class, $stagiaire);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em->persist($stagiaire);
+            $em->flush();
+            return $this->redirectToRoute('app_stagiaires');
+        }
 
         return $this->render('stagiaires/new.html.twig' , [
             'title' => 'Création d\'une nouvelle entrée',
             'form' => $form
         ]);
-        // $stagiaire = new Stagiaire();
-        // $stagiaire->setNom('Coffin');
-        // $stagiaire->setPrenom('Alice');
-
-        // // tell Doctrine you want to (eventually) save the stagiaire (no queries yet)
-        // $entityManager->persist($stagiaire);
-
-        // // actually executes the queries (i.e. the INSERT query)
-        // $entityManager->flush();
-
-        // return new Response('Saved new stagiaire with id '.$stagiaire->getId());
     }
  
-    #[Route ('/stagiaires/{id}' , name : 'app_show_stagiaire')]
+    #[Route ('show/{id}' , name : 'app_show_stagiaire')]
     public function show(?Stagiaire $stagiaire) : Response
     {
         // var_dump($stagiaire);
@@ -69,17 +67,39 @@ class StagiairesController extends AbstractController
         ]);
     }
  
-    #[Route ('/stagiaire/search/{nom}' , name : 'app_search_stagiaire')]
+    #[Route ('search/{nom}' , name : 'app_search_stagiaire')]
     public function search (StagiaireRepository $repo, string $nom = null) : Response
     {
        
         if ( $nom === null ){
             return $this->redirectToRoute('app_index');
         }
-        $results = $repo->searchByName($nom);
+        $results = $repo->searchByName($nom,"","","","");
         return $this->render('stagiaires/list.html.twig' , [
             'title' => 'Recherche de' .$nom,
             'stagiaire' => $results,
+        ]);
+    }
+
+    #[Route ('update/{id}', name: 'app_update_stagiaire')]
+    public function update(Request $request, EntityManagerInterface $em, ?Stagiaire $stagiaire)
+    {
+        if ( $stagiaire === null ){
+            return $this->redirectToRoute('app_stagiaires');
+        }
+
+        $form = $this->createForm(StagiaireFormType::class, $stagiaire);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em->persist($stagiaire);
+            $em->flush();
+            return $this->redirectToRoute('app_stagiaires');
+        }
+
+        return $this->render('stagiaires/new.html.twig' , [
+            'title' => 'Modification d\'une entrée',
+            'form' => $form
         ]);
     }
  
