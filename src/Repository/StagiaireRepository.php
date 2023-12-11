@@ -22,14 +22,16 @@ class StagiaireRepository extends ServiceEntityRepository
         parent::__construct($registry, Stagiaire::class);
     }
 
-   public function searchByName($name, $firstName="", $order="asc"): ?array
+   public function searchByName($name, $firstName="", $trinom, $triprenom, $trinaissance): ?array
    {
         return $this->createQueryBuilder('s')
             ->andWhere('s.nom LIKE :val')
             ->andWhere('s.prenom LIKE :val2')
             ->setParameter('val', '%'.$name.'%' )
             ->setParameter('val2', '%'.$firstName.'%' )
-            ->orderBy('s.nom', $order)
+            ->addOrderBy('s.nom', $trinom)
+            ->addOrderBy('s.prenom', $triprenom)
+            ->addOrderBy('s.date_naissance', $trinaissance)
             ->getQuery()
             ->getResult()
         ;

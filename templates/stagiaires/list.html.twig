@@ -8,24 +8,30 @@
     <h2>
         {{ title }}
     </h2>
-    
+    <h3><a href="{{ path('app_newstagiaire') }}">Créer</a></h3>
     <table>
         <tr>
             <th>Nom
-            {% if ( order == 'desc' ) %}
-                <a href="{{ path('app_stagiaires', { 'order': 'asc' }) }}?nom={{ nom }}">▼</a>
+            {% if ( trinom == 'desc' ) %}
+                <a href="{{ path('app_stagiaires') }}?nom={{ nom }}&triprenom={{ triprenom }}&trinom=asc&trinaissance={{ trinaissance }}">▼</a>
             {% else %}
-                <a href="{{ path('app_stagiaires', { 'order': 'desc' }) }}?nom={{ nom }}">▲</a>
+                <a href="{{ path('app_stagiaires') }}?nom={{ nom }}&triprenom={{ triprenom }}&trinom=desc&trinaissance={{ trinaissance }}">▲</a>
             {% endif %}
             </th>
             <th>Préom
-            {% if ( order == 'desc' ) %}
-                <a href="{{ path('app_stagiaires', { 'order': 'asc' }) }}?prenom={{ prenom }}">▼</a>
+            {% if ( triprenom == 'desc' ) %}
+                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom=asc&trinom={{ trinom }}&trinaissance={{ trinaissance }}">▼</a>
             {% else %}
-                <a href="{{ path('app_stagiaires', { 'order': 'desc' }) }}?prenom={{ prenom }}">▲</a>
+                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom=desc&trinom={{ trinom }}&trinaissance={{ trinaissance }}">▲</a>
             {% endif %}
             </th>
-            <th>Date Naissance</th>
+            <th>Date Naissance
+            {% if ( trinaissance == 'desc' ) %}
+                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom={{ triprenom }}&trinom={{ trinom }}&trinaissance=asc">▼</a>
+            {% else %}
+                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom={{ triprenom }}&trinom={{ trinom }}&trinaissance=desc">▲</a>
+            {% endif %}
+            </th>
             <th>Voir</th>
         </tr>
     {% for item in stagiaires %}
