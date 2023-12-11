@@ -19,6 +19,7 @@ class CoursController extends AbstractController
   #[Route('list', name: 'app_list_cours')]
   public function list(CoursRepository $coursRepo, Request $request): Response
   {
+    // $cours = $coursRepo->searchByName($request->query->get('nom', ''));
     $cours = $coursRepo->findAll();
 
     return $this->render('cours/list.html.twig', [

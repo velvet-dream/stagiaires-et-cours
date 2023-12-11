@@ -17,7 +17,9 @@ class CoursFormType extends AbstractType
             ->add('nom')
             ->add('stagiaire', EntityType::class, [
                 'class' => Stagiaire::class,
-                'choice_label' => 'id',
+                'choice_label' => function (?Stagiaire $stagiaire): string {
+                    return $stagiaire ? ($stagiaire->getId() . "-" . $stagiaire->getNom() . " " . $stagiaire->getPrenom()) : '';
+                },
                 'multiple' => true,
             ]);
     }

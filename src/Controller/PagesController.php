@@ -15,7 +15,6 @@ class PagesController extends AbstractController
             'title' => 'Mon premier controller symfony',
             'controller_var' => 'LET S GOOOOO',
             'message' => 'New liste (de course)',
-
         ]);
     }
 
