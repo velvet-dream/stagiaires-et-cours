@@ -11,6 +11,30 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav>
+            {% block nav %}
+            <a href="{{ path('app_index') }}">Acceuil</a><br>
+            <a href="{{ path('app_stagiaires') }}">Liste des stagiaires</a>
+
+
+            {% endblock %}
+        </nav>
+
+        <main>
+            {% block main %}
+            {% endblock %}
+        </main>
+
+        <footer>
+            {% block footer %}
+
+            <a href="{{ path('app_mentionslegales') }}">mentions legales </a><br>
+            <a href="{{ path('app_test') }}">Fake page </a><br>
+            <a href="{{ path('app_download') }}"> Téléchargement </a><br>
+            <a href="{{ path('app_dynamique', {'name' : 'toto' , 'surname' : 'tutu'}) }}"> Paramètres dynamiques </a><br>
+            <a href="{{ path('app_dynamique') }}"> Paramètres dynamiques non renseigné</a><br>
+
+            {% endblock %}
+        </footer>
     </body>
 </html>
