@@ -50,7 +50,9 @@
             <td><a href=" {{ path('app_update_stagiaire' , {'id' : item.id })}}">Modifier</a></td>
         </tr>
     {% else %}
-        Aucun stagiaire n'est inscrit ! 
+        <tr>
+            <td colspan="5">Aucun stagiaire n'est inscrit !</td>
+        </tr>
     {% endfor %}
     </table>
     <form method="GET">

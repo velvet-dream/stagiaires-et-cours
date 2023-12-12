@@ -22,7 +22,10 @@
             <td><a href=" {{ path('app_update_cours' , {'id' : item.id })}}">Modifier</a></td>
         </tr>
     {% else %}
-        Aucun cours n'est enregistré !
+        <tr>
+            <td colspan="5">Aucun cours n'est enregistré !</td>
+        </tr>
+       
     {% endfor %}
     </table>
     <form method="GET">

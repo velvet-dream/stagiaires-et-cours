@@ -4,14 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Cours;
 use App\Form\CoursFormType;
+use App\Form\AddStagiaireCoursType;
 use App\Repository\CoursRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-
-use function PHPUnit\Framework\isNull;
 
 #[Route('cours/')]
 class CoursController extends AbstractController
@@ -68,6 +67,28 @@ class CoursController extends AbstractController
     }
 
     $form = $this->createForm(CoursFormType::class, $cours);
+
+    $form->handleRequest($request);
+    if ($form->isSubmitted()) {
+      $em->persist($cours);
+      $em->flush();
+      return $this->redirectToRoute('app_list_cours');
+    }
+
+    return $this->render('cours/new.html.twig', [
+      'title' => 'Modification d\'un cours',
+      'form' => $form
+    ]);
+  }
+
+  #[Route('addStagiaire/{id}', name: 'app_add_stagiaire_cours')]
+  public function addStagiaire(Request $request, EntityManagerInterface $em, ?Cours $cours): Response
+  {
+    if ($cours === null) {
+      return $this->redirectToRoute('app_list_cours');
+    }
+
+    $form = $this->createForm(AddStagiaireCoursType::class, $cours);
 
     $form->handleRequest($request);
     if ($form->isSubmitted()) {
