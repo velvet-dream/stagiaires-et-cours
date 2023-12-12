@@ -7,7 +7,7 @@ use App\Form\CoursFormType;
 use App\Form\AddStagiaireCoursType;
 use App\Repository\CoursRepository;
 use App\Repository\StagiaireRepository;
-use App\Service\FormCoursService;
+use App\Services\FormCoursService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -84,42 +84,39 @@ class CoursController extends AbstractController
   public function addStagiaire(
     Request $request, 
     EntityManagerInterface $em,
-    StagiaireRepository $stagiaireRepo, 
     ?Cours $cours,
-    FormFactoryInterface $formFactory
+    FormCoursService $formService
   ): Response
   {
     if ($cours === null) {
       return $this->redirectToRoute('app_list_cours');
     }
-
-    $form = $formFactory->createNamed('ajouter_stagiaire', AddStagiaireCoursType::class, $cours, ['inscrits' => $stagiaireRepo->getStagiairesNotSubscribed($cours)]);
-    $formb = $formFactory->createNamed('remove_stagiaire', AddStagiaireCoursType::class, $cours, ['inscrits' => $cours->getStagiaire(), 'label_submit' => 'Supprimer']);
+    
+    $formAdd = $formService->createNamedForm($cours);
+    $formRemove = $formService->createNamedForm($cours, false);
 
     if($request->request->has('remove_stagiaire')) {
-      $formb->handleRequest($request);
-      if ($formb->isSubmitted()) {
+      $formRemove->handleRequest($request);
+      if ($formRemove->isSubmitted()) {
         $em->persist($cours);
         $em->flush();
         return $this->redirectToRoute('app_add_stagiaire_cours', ['id' => $cours->getId()]);
       }
     } elseif ($request->request->has('ajouter_stagiaire')) {
-      $form->handleRequest($request);
-      if ($form->isSubmitted()) {
+      $formAdd->handleRequest($request);
+      if ($formAdd->isSubmitted()) {
         $em->persist($cours);
         $em->flush();
         return $this->redirectToRoute('app_add_stagiaire_cours', ['id' => $cours->getId()]);
       }
     }
     
-    
-    
 
     return $this->render('cours/gestion_stagiaires.html.twig', [
       'title' => 'Modification d\'un cours',
       'cours' => $cours,
-      'form' => $form,
-      'formb' => $formb,
+      'form' => $formAdd,
+      'formb' => $formRemove,
     ]);
   }
 }
