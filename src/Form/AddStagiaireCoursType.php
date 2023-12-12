@@ -16,9 +16,10 @@ class AddStagiaireCoursType extends AbstractType
   {
     // check https://symfony.com/doc/current/form/form_customization.html#form-rendering-functions
     $builder
-      ->add('nom')
       ->add('stagiaire', EntityType::class, [
+          'required' => false,
           'class' => Stagiaire::class,
+          'choices' => $options['inscrits'],
           'multiple' => true,
           'expanded' => true,
           'attr' => [
@@ -26,7 +27,7 @@ class AddStagiaireCoursType extends AbstractType
           ],
       ])
       ->add('submit', SubmitType::class, [
-        'label' => 'Ajouter stagiaires',
+        'label' => $options['label_submit'],
       ]);
   }
 
@@ -34,6 +35,8 @@ class AddStagiaireCoursType extends AbstractType
   {
     $resolver->setDefaults([
       'data_class' => Cours::class,
+      'inscrits' => [],
+      'label_submit' => 'Sauvegarder',
     ]);
   }
 }

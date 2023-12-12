@@ -37,6 +37,22 @@ class StagiaireRepository extends ServiceEntityRepository
         ;
    }
 
+   
+   public function getStagiairesNotSubscribed($cours)
+   {
+    $sql = "SELECT * FROM stagiaire WHERE stagiaire.id NOT IN
+        (SELECT c.stagiaire_id FROM stagiaire as s join `cours_stagiaire` as c
+        ON s.id=c.stagiaire_id WHERE c.cours_id= ?);";
+    $query = $this->getEntityManager()->getConnection()
+        ->executeQuery($sql, [$cours->getId()]);
+    $connards = $query->fetchAllAssociative();
+    $results = [];
+    foreach($connards as $notinscrit) {
+        $results[] = $this->find($notinscrit['id']);
+    }
+    return $results;
+   }
+
 //    /**
 //     * @return Stagiaire[] Returns an array of Stagiaire objects
 //     */

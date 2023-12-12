@@ -6,8 +6,11 @@ use App\Entity\Cours;
 use App\Form\CoursFormType;
 use App\Form\AddStagiaireCoursType;
 use App\Repository\CoursRepository;
+use App\Repository\StagiaireRepository;
+use App\Service\FormCoursService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,15 +44,13 @@ class CoursController extends AbstractController
   }
 
   #[Route('new', name: 'app_new_cours')]
-  public function new(Request $request, EntityManagerInterface $em): Response
+  public function new(Request $request, FormCoursService $formService): Response
   {
     $cours = new Cours();
     $form = $this->createForm(CoursFormType::class, $cours);
 
     $form->handleRequest($request);
-    if ($form->isSubmitted()) {
-      $em->persist($cours);
-      $em->flush();
+    if ($formService->submitForm($form, $cours)) {
       return $this->redirectToRoute('app_list_cours');
     }
 
@@ -60,7 +61,7 @@ class CoursController extends AbstractController
   }
 
   #[Route('update/{id}', name: 'app_update_cours')]
-  public function update(Request $request, EntityManagerInterface $em, ?Cours $cours)
+  public function update(Request $request, FormCoursService $formService, ?Cours $cours)
   {
     if ($cours === null) {
       return $this->redirectToRoute('app_list_cours');
@@ -69,9 +70,7 @@ class CoursController extends AbstractController
     $form = $this->createForm(CoursFormType::class, $cours);
 
     $form->handleRequest($request);
-    if ($form->isSubmitted()) {
-      $em->persist($cours);
-      $em->flush();
+    if ($formService->submitForm($form, $cours)) {
       return $this->redirectToRoute('app_list_cours');
     }
 
@@ -82,24 +81,45 @@ class CoursController extends AbstractController
   }
 
   #[Route('addStagiaire/{id}', name: 'app_add_stagiaire_cours')]
-  public function addStagiaire(Request $request, EntityManagerInterface $em, ?Cours $cours): Response
+  public function addStagiaire(
+    Request $request, 
+    EntityManagerInterface $em,
+    StagiaireRepository $stagiaireRepo, 
+    ?Cours $cours,
+    FormFactoryInterface $formFactory
+  ): Response
   {
     if ($cours === null) {
       return $this->redirectToRoute('app_list_cours');
     }
 
-    $form = $this->createForm(AddStagiaireCoursType::class, $cours);
+    $form = $formFactory->createNamed('ajouter_stagiaire', AddStagiaireCoursType::class, $cours, ['inscrits' => $stagiaireRepo->getStagiairesNotSubscribed($cours)]);
+    $formb = $formFactory->createNamed('remove_stagiaire', AddStagiaireCoursType::class, $cours, ['inscrits' => $cours->getStagiaire(), 'label_submit' => 'Supprimer']);
 
-    $form->handleRequest($request);
-    if ($form->isSubmitted()) {
-      $em->persist($cours);
-      $em->flush();
-      return $this->redirectToRoute('app_list_cours');
+    if($request->request->has('remove_stagiaire')) {
+      $formb->handleRequest($request);
+      if ($formb->isSubmitted()) {
+        $em->persist($cours);
+        $em->flush();
+        return $this->redirectToRoute('app_add_stagiaire_cours', ['id' => $cours->getId()]);
+      }
+    } elseif ($request->request->has('ajouter_stagiaire')) {
+      $form->handleRequest($request);
+      if ($form->isSubmitted()) {
+        $em->persist($cours);
+        $em->flush();
+        return $this->redirectToRoute('app_add_stagiaire_cours', ['id' => $cours->getId()]);
+      }
     }
+    
+    
+    
 
-    return $this->render('cours/new.html.twig', [
+    return $this->render('cours/gestion_stagiaires.html.twig', [
       'title' => 'Modification d\'un cours',
-      'form' => $form
+      'cours' => $cours,
+      'form' => $form,
+      'formb' => $formb,
     ]);
   }
 }
