@@ -8,6 +8,7 @@ use App\Repository\StagiaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 use function PHPSTORM_META\type;
 
@@ -17,7 +18,7 @@ class FormCoursService {
   public function __construct(
     private EntityManagerInterface $em,
     private FormFactoryInterface $formFactory,
-    private StagiaireRepository $stagiaireRepo,
+    private StagiaireRepository $stagiaireRepo
   )
   {
     
@@ -47,10 +48,10 @@ class FormCoursService {
     return $this->formFactory->createNamed($name, AddStagiaireCoursType::class, $this->cours, $options);
   }
 
-  public function submitForm(FormInterface $form, Cours $cours):bool
+  public function submitForm(FormInterface $form, Cours $cours, ?Request $request):bool
   {
     if ($form->isSubmitted() && $form->isValid()) {
-      //if($this->request->request->has())
+      //if($request->request->has())
       $this->em->persist($cours);
       $this->em->flush();
       return true;
@@ -60,6 +61,6 @@ class FormCoursService {
 
   private function addStagiaire()
   {
-    
+
   }
 }
