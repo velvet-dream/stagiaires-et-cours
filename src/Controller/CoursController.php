@@ -10,39 +10,25 @@ use App\Services\FormCoursService;
 use App\Services\TestService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
-#[Route('cours/')]
+
 class CoursController extends AbstractController {
 
-    #[Route('list', name: 'app_list_cours')]
-    public function list(CoursRepository $coursRepo,Request $request): Response
-    {
-        $cours = $coursRepo->findAll();
-
-        return $this->render('cours/list.html.twig', [
-            'title' => 'Liste des cours',
-            'cours' => $cours,
-        ]);
-    }
-
-    #[Route('new', name: 'app_new_cours')]
+    #[Route('admin/new', name: 'app_new_cours')]
     public function create(
         Request $request,
         FormCoursService $formCoursService,
         Security $security): Response
     {
-        if (!$security->isGranted('ROLE_ADMIN')) {
-            $this->redirectToRoute('app_index');
+        if(!$security->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_index');
         }
-
-        //$user = $security->getUser();
-
-        $cours = new Cours;
+        $cours = new Cours();
         $form = $this->createForm(CoursFormType::class, $cours);
 
         $form->handleRequest($request);
@@ -99,10 +85,13 @@ class CoursController extends AbstractController {
                 return $this->redirectToRoute('app_addstagiaire_cours', ['id' => $cours->getId()]);
             }
         }**/
-
-        if($formCoursService->submitForm($formadd,$cours,$request)) {
-            return $this->redirectToRoute('app_addstagiaire_cours', ['id' => $cours->getId()]);
+        if ($request->request->has('add_stagiaire')) {
+            $formadd->handleRequest($request);
+            if($formCoursService->submitForm($formadd,$cours,$request)) {
+                return $this->redirectToRoute('app_addstagiaire_cours', ['id' => $cours->getId()]);
+            }
         }
+        
 
         return $this->render('cours/gestionstagiaires.html.twig',[
             'title' => "Gestion des inscrits au cours ".$cours->getNom(),

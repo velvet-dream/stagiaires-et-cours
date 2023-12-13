@@ -3,13 +3,15 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+#[Route(path: '/admin')]
 class AdminController extends AbstractController
 {
-    #[Route(path: '/admin/login', name: 'app_admin_login')]
+    #[Route(path: '/login', name: 'app_admin_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // if ($this->getUser()) {
@@ -24,9 +26,20 @@ class AdminController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
-    #[Route(path: '/admin/logout', name: 'app_admin_logout')]
+    #[Route(path: '/logout', name: 'app_admin_logout')]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+    }
+
+    #[Route(path: '/dashboard', name: 'app_admin_dashboard')]
+    public function dashboard(Security $security): Response
+    {
+        if (!$security->isGranted("ROLE_ADMIN")) {
+            return $this->redirectToRoute("app_index");
+        }
+        return $this->render('admin/dashboard.html.twig', [
+            'title' => 'Dashboard',
+        ]);
     }
 }

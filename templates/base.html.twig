@@ -16,11 +16,11 @@
             {% block nav %}
                 <a href="{{ path('app_index') }}">Accueil</a>
                 <a href="{{ path('app_list_stagiaires') }}">Listes des stagiaires</a>
-                <a href="{{ path('app_list_cours') }}">Listes des cours</a>
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <a href="{{ path('app_logout') }}">Se déconnecter</a>
+                {% if is_granted('IS_AUTHENTICATED_FULLY')%}
+                    {{ app.user.email }}
+                    <a href="{{ path('app_logout') }}">Déconnexion</a>
                 {% else %}
-                    <a href="{{ path('app_login') }}">Se connecter</a>                 
+                    <a href="{{ path('app_login') }}">Connexion</a>
                 {% endif %}
             {% endblock %}
         </nav>

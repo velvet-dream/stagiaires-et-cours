@@ -6,7 +6,9 @@
 
 {% block main %}
     <h2>{{ title }}</h2>
+    {% if is_granted('ROLE_ADMIN') %}
     <h3><a href="{{ path('app_new_stagiaire') }}">Créer</a></h3>
+    {% endif %}
     <table>
         <tr>
             <td>
@@ -41,7 +43,9 @@
             {% endif %}
             </td>
             <td><a href="{{ path('app_show_stagiaire', { 'id': item.id })}}">Voir</a></td>
+            {% if is_granted('ROLE_ADMIN') %}
             <td><a href="{{ path('app_update_stagiaire', { 'id': item.id })}}">Mettre à jour</a></td>
+            {% endif %}
         </tr>
     {% else %}
         <tr>

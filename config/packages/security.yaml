@@ -5,26 +5,35 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-       app_admin_provider:
-            entity:
-                class: App\Entity\User
-                property: username 
-        app_user_provider:
+        app_admin_provider:
             entity:
                 class: App\Entity\User
                 property: username
-        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\Stagiaire
+                property: email
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        
         admin:
+            pattern: ^/admin
             lazy: true
             provider: app_admin_provider
-            custom_authenticator: App\Security\AppAdminAuthenticator
+            custom_authenticator: 
+                - App\Security\AppAdminAuthenticator
             logout:
                 path: app_admin_logout
                 target: app_index
+            
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                always_remember_me: true
         main:
             lazy: true
             provider: app_user_provider
@@ -35,13 +44,7 @@ security:
             logout:
                 path: app_logout
                 target: app_index
-            custom_authenticator: App\Security\AppAdminAuthenticator
 
-            remember_me:
-                secret: '%kernel.secret%'
-                lifetime: 604800
-                path: /
-                always_remember_me: true
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -51,8 +54,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/cours, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/update, roles: ROLE_ADMIN }
+        - { path: ^/new, roles: ROLE_ADMIN }
 
 when@test:
     security:

@@ -6,6 +6,7 @@ use App\Form\StagiaireFormType;
 use App\Repository\StagiaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,8 +44,11 @@ class StagiairesController extends AbstractController {
     }
 
     #[Route('new', name: 'app_new_stagiaire')]
-    public function new(Request $request, EntityManagerInterface $em):Response
+    public function new(Request $request, EntityManagerInterface $em, Security $security):Response
     {
+        if (!$security->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_list_stagiaires');
+        }
         $stagiaire = new Stagiaire();
         $form = $this->createForm(StagiaireFormType::class, $stagiaire);
 
@@ -61,8 +65,15 @@ class StagiairesController extends AbstractController {
     }
 
     #[Route('update/{id}', name: 'app_update_stagiaire')]
-    public function update(Request $request, EntityManagerInterface $em, ?Stagiaire $stagiaire)
+    public function update(
+        Request $request, 
+        EntityManagerInterface $em, 
+        ?Stagiaire $stagiaire,
+        Security $security)
     {
+        if (!$security->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_list_stagiaires');
+        }
         if ($stagiaire === null) {
             return $this->redirectToRoute('app_list_stagiaires');
         }
