@@ -1,65 +1,56 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{title}}
+    {{ title }}
 {% endblock %}
 
 {% block main %}
-    <h2>
-        {{ title }}
-    </h2>
-    <h3><a href="{{ path('app_newstagiaire') }}">Créer</a></h3>
+    <h2>{{ title }}</h2>
+    <h3><a href="{{ path('app_new_stagiaire') }}">Créer</a></h3>
     <table>
         <tr>
-            <th>Nom
-            {% if ( trinom == 'desc' ) %}
-                <a href="{{ path('app_stagiaires') }}?nom={{ nom }}&triprenom={{ triprenom }}&trinom=asc&trinaissance={{ trinaissance }}">▼</a>
+            <td>
+            Nom
+            {% if ( trinom == 'desc') %}
+                <a href="{{ path('app_list_stagiaires') }}?nom={{ nom }}&trinom=asc&triprenom={{ triprenom }}">></a>
             {% else %}
-                <a href="{{ path('app_stagiaires') }}?nom={{ nom }}&triprenom={{ triprenom }}&trinom=desc&trinaissance={{ trinaissance }}">▲</a>
+                <a href="{{ path('app_list_stagiaires') }}?nom={{ nom }}&trinom=desc&triprenom={{ triprenom }}"><</a>
             {% endif %}
-            </th>
-            <th>Préom
-            {% if ( triprenom == 'desc' ) %}
-                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom=asc&trinom={{ trinom }}&trinaissance={{ trinaissance }}">▼</a>
+            </td>
+            <td>
+            Prénom
+            {% if ( triprenom == 'desc') %}
+                <a href="{{ path('app_list_stagiaires') }}?nom={{ nom }}&triprenom=asc&trinom={{ trinom }}">></a>
             {% else %}
-                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom=desc&trinom={{ trinom }}&trinaissance={{ trinaissance }}">▲</a>
+                <a href="{{ path('app_list_stagiaires') }}?nom={{ nom }}&triprenom=desc&trinom={{ trinom }}"><</a>
             {% endif %}
-            </th>
-            <th>Date Naissance
-            {% if ( trinaissance == 'desc' ) %}
-                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom={{ triprenom }}&trinom={{ trinom }}&trinaissance=asc">▼</a>
-            {% else %}
-                <a href="{{ path('app_stagiaires') }}?prenom={{ prenom }}&triprenom={{ triprenom }}&trinom={{ trinom }}&trinaissance=desc">▲</a>
-            {% endif %}
-            </th>
-            <th>Voir</th>
-            <th>Modifier</th>
+            </td>
+            <td>Date de naissance</td>
+            <td>Voir</td>
+            <td>Update</td>
         </tr>
     {% for item in stagiaires %}
         <tr>
             <td>{{ item.nom }}</td>
             <td>{{ item.prenom }}</td>
             <td>
-                {% if item.datenaissance == null %}
-                    Non renseignée
-                {% else %}
-                    {{ item.datenaissance|format_datetime() }}
-                {% endif %}
+            {% if (item.datenaissance == null) %}
+                Non renseigné
+            {% else %}
+                {{ item.datenaissance|format_datetime() }}
+            {% endif %}
             </td>
-            <td><a href=" {{ path('app_show_stagiaire' , {'id' : item.id })}}">Voir</a></td>
-            <td><a href=" {{ path('app_update_stagiaire' , {'id' : item.id })}}">Modifier</a></td>
+            <td><a href="{{ path('app_show_stagiaire', { 'id': item.id })}}">Voir</a></td>
+            <td><a href="{{ path('app_update_stagiaire', { 'id': item.id })}}">Mettre à jour</a></td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="5">Aucun stagiaire n'est inscrit !</td>
+            <td colspan="5">Aucun enregistrement</td>
         </tr>
     {% endfor %}
     </table>
-    <form method="GET">
-        <label for="nom">Nom</label>
-        <input type='text' id="nom" name='nom' placeholder="recherche par nom" value='{{ nom }}'>
-        <label for="prenom">Prenom</label>
-        <input type='text' id="prenom" name='prenom' placeholder="recherche par prénom" value='{{ prenom }}'>
-        <button type="submit" name="submit" value="rechercher">Rechercher</button>
+    <form>
+        <input type='text' name='nom' placeholder='recherchez par le nom' value='{{ nom }}'>
+        <input type='submit' name='submit' value='rechercher'>
     </form>
 {% endblock %}

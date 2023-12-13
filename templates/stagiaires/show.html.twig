@@ -1,15 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{title}}
+    {{ title }}
 {% endblock %}
 
 {% block main %}
-    <h2>
-        {{ title }}
-    </h2>
-
+    <h2>{{ title }}</h2>
         <p>
-            {{ stagiaire.id }} {{ stagiaire.nom }} {{ stagiaire.prenom }}
+            {{ stagiaire.id }}-{{ stagiaire.nom }}-{{ stagiaire.prenom }}
         </p>
 {% endblock %}

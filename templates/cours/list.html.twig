@@ -12,20 +12,18 @@
     <table>
         <tr>
             <th>Intitulé</th>
-            <th>Voir</th>
             <th>Modifier</th>
             <th>Ajouter participanz</th>
         </tr>
     {% for item in cours %}
         <tr>
             <td>{{ item.nom }}</td>
-            <td><a href=" {{ path('app_show_cours' , {'id' : item.id })}}">Voir</a></td>
             <td><a href=" {{ path('app_update_cours' , {'id' : item.id })}}">Modifier</a></td>
             <td><a href=" {{ path('app_add_stagiaire_cours' , {'id' : item.id })}}">Ajouter</a></td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="4">Aucun cours n'est enregistré !</td>
+            <td colspan="3">Aucun cours n'est enregistré !</td>
         </tr>
        
     {% endfor %}

@@ -13,17 +13,15 @@ class PagesController extends AbstractController
     {
         return $this->render('pages/index.html.twig', [
             'title' => 'Mon premier controller symfony',
-            'controller_var' => 'LET S GOOOOO',
-            'message' => 'New liste (de course)',
+            'message' => 'Bienvenue sur mon super site',
         ]);
     }
 
     #[Route('/mentionslegales', name: 'app_mentionslegales')]
     public function mentionsLegales(): Response
     {
-        // return $this->redirectToRoute('app_index');
         return $this->render('pages/mentionslegales.html.twig', [
-            'title' => 'Mentions légales',
+            'title' => 'Mentions légales'
         ]);
     }
 }

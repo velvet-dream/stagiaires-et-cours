@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -9,43 +8,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TestController extends AbstractController
-{
+class TestController extends AbstractController {
+
     #[Route('/test', name: 'app_test', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        // var_dump($request->query);
-        var_dump($request->query->get('title'));
         return $this->render('pages/mentionslegales.html.twig', [
-            'title' => $request->query->get('title', 'Hervé'),
-            // 'title' => (isset($_GET['title'])) ? $_GET['title']: 'fake page',
-            // 'title' => $this->toto(),
+            'title' => $request->query->get('title','Hervé'),
         ]);
     }
 
-    #[Route('/monom/{name}/{surname}', name: 'app_dynamique')]
-    public function monNom( string $name = 'Lilya', string $surname = 'Emad') : Response
+    #[Route('/monnom/{name}/{surnom}', name: 'app_dynamique')]
+    public function monNom(string $name = 'Hervé', string $surnom = 'HC'): Response
     {
         return $this->render('pages/mentionslegales.html.twig', [
-            'title' => $name . " " . $surname,
+            'title' => $name.' '.$surnom,
         ]);
-    } 
-    
+    }
 
     #[Route('/json', name: 'app_json')]
-    public function monJson() : JsonResponse
+    public function monJson(): JsonResponse
     {
-        $data = [
-            'name' => 'Lilya',
-            'surname' => 'Drole',
+        $datas = [
+            'name' => 'Hervé',
+            'surname' => 'Psychopathe',
         ];
-        return $this->json($data);
+        return $this->json($datas, 201);
     }
 
     #[Route('/download', name: 'app_download')]
-    public function download() : BinaryFileResponse
+    public function download(): BinaryFileResponse
     {
         return $this->file('download/test.txt');
     }
-
 }

@@ -7,34 +7,33 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         {% block stylesheets %}
         {% endblock %}
-
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
         {% block javascripts %}
         {% endblock %}
     </head>
     <body>
         <nav>
             {% block nav %}
-            <a href="{{ path('app_index') }}">Acceuil</a><br>
-            <a href="{{ path('app_stagiaires') }}">Liste des stagiaires</a>
-            <a href="{{ path('app_list_cours') }}">Liste des cours</a>
-
+                <a href="{{ path('app_index') }}">Accueil</a>
+                <a href="{{ path('app_list_stagiaires') }}">Listes des stagiaires</a>
+                <a href="{{ path('app_list_cours') }}">Listes des cours</a>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a href="{{ path('app_logout') }}">Se déconnecter</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}">Se connecter</a>                 
+                {% endif %}
             {% endblock %}
         </nav>
-
         <main>
-            {% block main %}
-            {% endblock %}
+            {% block main %}{% endblock %}
         </main>
-
         <footer>
             {% block footer %}
-
-            <a href="{{ path('app_mentionslegales') }}">mentions legales </a><br>
-            <a href="{{ path('app_test') }}">Fake page </a><br>
-            <a href="{{ path('app_download') }}"> Téléchargement </a><br>
-            <a href="{{ path('app_dynamique', {'name' : 'toto' , 'surname' : 'tutu'}) }}"> Paramètres dynamiques </a><br>
-            <a href="{{ path('app_dynamique') }}"> Paramètres dynamiques non renseigné</a><br>
-
+                <a href="{{ path('app_mentionslegales') }}">mentions légales</a>
+                <a href="{{ path('app_test') }}">Fake page</a>
+                <a href="{{ path('app_download') }}">Téléchargement</a>
+                <a href="{{ path('app_dynamique', {'name': 'toto','surnom': 'tutu'}) }}">paramètres dynamiques</a>
+                <a href="{{ path('app_dynamique') }}">paramètres dynamiques non renseignés</a>
             {% endblock %}
         </footer>
     </body>

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\StagiaireRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StagiaireRepository::class)]
@@ -21,10 +22,10 @@ class Stagiaire
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $prenom = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $date_naissance = null;
 
-    #[ORM\ManyToMany(targetEntity: Cours::class, mappedBy: 'stagiaire')]
+    #[ORM\ManyToMany(targetEntity: Cours::class, mappedBy: 'stagiaires')]
     private Collection $cours;
 
     public function __construct()

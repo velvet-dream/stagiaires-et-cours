@@ -1,8 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello IndexController!{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block main %}
-<h1>{{ title }}</h1>
-<p>Page principale</p>
+    <h1> 
+        {{ title }}
+    </h1>
+    <p>
+        {{ message }}
+    </p>
 {% endblock %}

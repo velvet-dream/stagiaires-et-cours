@@ -15,15 +15,15 @@ class Cours
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
     #[ORM\ManyToMany(targetEntity: Stagiaire::class, inversedBy: 'cours')]
-    private Collection $stagiaire;
+    private Collection $stagiaires;
 
     public function __construct()
     {
-        $this->stagiaire = new ArrayCollection();
+        $this->stagiaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -36,7 +36,7 @@ class Cours
         return $this->nom;
     }
 
-    public function setNom(?string $nom): static
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
 
@@ -46,15 +46,15 @@ class Cours
     /**
      * @return Collection<int, Stagiaire>
      */
-    public function getStagiaire(): Collection
+    public function getStagiaires(): Collection
     {
-        return $this->stagiaire;
+        return $this->stagiaires;
     }
 
     public function addStagiaire(Stagiaire $stagiaire): static
     {
-        if (!$this->stagiaire->contains($stagiaire)) {
-            $this->stagiaire->add($stagiaire);
+        if (!$this->stagiaires->contains($stagiaire)) {
+            $this->stagiaires->add($stagiaire);
         }
 
         return $this;
@@ -62,7 +62,7 @@ class Cours
 
     public function removeStagiaire(Stagiaire $stagiaire): static
     {
-        $this->stagiaire->removeElement($stagiaire);
+        $this->stagiaires->removeElement($stagiaire);
 
         return $this;
     }
