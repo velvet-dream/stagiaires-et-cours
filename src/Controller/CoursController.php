@@ -50,7 +50,7 @@ class CoursController extends AbstractController
     $form = $this->createForm(CoursFormType::class, $cours);
 
     $form->handleRequest($request);
-    if ($formService->submitForm($form, $cours)) {
+    if ($formService->submitForm($form, $cours, $request)) {
       return $this->redirectToRoute('app_list_cours');
     }
 
@@ -70,7 +70,7 @@ class CoursController extends AbstractController
     $form = $this->createForm(CoursFormType::class, $cours);
 
     $form->handleRequest($request);
-    if ($formService->submitForm($form, $cours)) {
+    if ($formService->submitForm($form, $cours, $request)) {
       return $this->redirectToRoute('app_list_cours');
     }
 

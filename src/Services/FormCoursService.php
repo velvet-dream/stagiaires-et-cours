@@ -59,8 +59,15 @@ class FormCoursService {
     return false;
   }
 
-  private function addStagiaire()
+  private function addStagiaire(FormInterface $form)
   {
-
+    if ($form->has('stagiaire')){
+      $stagiaireForm = $form->get('stagiaires')->getData();
+      foreach ($stagiaireForm as $stagiaire) {
+        if(!$this->cours->getStagiaires()->contains($stagiaire)) {
+          $this->cours->addStagiaire($stagiaire);
+        }
+      }
+    }
   }
 }
